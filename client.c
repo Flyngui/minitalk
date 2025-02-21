@@ -6,7 +6,18 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:23 by guiferre          #+#    #+#             */
-/*   Updated: 2025/02/11 19:14:23 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/02/21 15:14:58 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <signal.h>
+#include "libft/libft.h"
+
+int main(int argc, char **argv)
+{
+	if (argc == 3)
+	{
+
+	}
+	return (0);
+}
