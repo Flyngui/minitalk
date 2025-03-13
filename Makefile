@@ -1,3 +1,11 @@
+# Colors must be included in the form of codes. NC = No color
+GREEN = \033[0;32m
+BLUE = \033[0;34m
+PURPLE = \033[0;35m
+CYAN = \033[0;36m
+YELLOW = \033[0;33m
+NC = \033[0m
+
 SOURCES = client.c \
           server.c
 
@@ -11,23 +19,28 @@ all: server client
 bonus: server client
 
 client: client.o libft
-	$(CC) -o $@ $< -Llibft -lft
+	@echo -e "$(CYAN)Compiling Client.$(NC)"
+	@$(CC) -o $@ $< -Llibft -lft
 
 server: server.o libft
-	$(CC) -o $@ $< -Llibft -lft
+	@echo -e "$(CYAN)Compiling Server.$(NC)"
+	@$(CC) -o $@ $< -Llibft -lft
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $?
+	@$(CC) -c $(CFLAGS) $?
 
 libft:
-	make -C libft
+	@echo -e "$(BLUE)Compiling libft.$(NC)"
+	@make -C libft
 
 clean:
-	rm -f $(OBJECTS)
-	make -C libft clean
+	@echo -e "$(YELLOW)Removing .o files.$(NC)"
+	@rm -f $(OBJECTS)
+	@make -C libft clean
 
 fclean: clean
-	rm -f server client libft/libft.a
+	@echo -e "$(YELLOW)Removing executables.$(NC)"
+	@rm -f server client libft/libft.a
 
 re: fclean all
 
