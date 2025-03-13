@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:23 by guiferre          #+#    #+#             */
-/*   Updated: 2025/03/12 20:59:39 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/03/12 21:13:49 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 
 static void	sig_handler(int sig)
 {
-	static int	back;
+	static int	back = 0;
 
-	back = 0;
 	if (sig == SIGUSR1)
 		back++;
 	else

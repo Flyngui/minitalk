@@ -1,5 +1,5 @@
-SOURCES = server.c \
-          client.c
+SOURCES = client.c \
+          server.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
@@ -10,10 +10,10 @@ all: server client
 
 bonus: server client
 
-server: server.o libft
+client: client.o libft
 	$(CC) -o $@ $< -Llibft -lft
 
-client: client.o libft
+server: server.o libft
 	$(CC) -o $@ $< -Llibft -lft
 
 %.o: %.c

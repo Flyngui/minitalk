@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/03/12 20:59:37 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/03/13 04:06:08 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,9 @@
 void	sig_handler(int sig, siginfo_t *info, void *context)
 {
 	static pid_t			client_pid;
-	static int				i;
-	static unsigned char	c;
+	static int				i = 0;
+	static unsigned char	c = 0;
 
-	c = 0;
-	i = 0;
 	(void)context;
 	if (!client_pid)
 		client_pid = info->si_pid;
@@ -31,6 +29,7 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 		if (!c)
 		{
 			kill(client_pid, SIGUSR2);
+			ft_printf("%c", '\n');
 			client_pid = 0;
 			return ;
 		}
@@ -58,5 +57,3 @@ int	main(void)
 		pause();
 	return (0);
 }
-// server must print its pid (getpid)
-// server must receive a string from a signal (SIGUSR1 and SIGUSR2) and print it
