@@ -18,16 +18,13 @@ all: server client
 
 bonus: server client
 
-client: client.o libft
-	@echo -e "$(CYAN)Compiling Client.$(NC)"
-	@$(CC) -o $@ $< -Llibft -lft
-
 server: server.o libft
 	@echo -e "$(CYAN)Compiling Server.$(NC)"
 	@$(CC) -o $@ $< -Llibft -lft
 
-%.o: %.c
-	@$(CC) -c $(CFLAGS) $?
+client: client.o libft
+	@echo -e "$(CYAN)Compiling Client.$(NC)"
+	@$(CC) -o $@ $< -Llibft -lft
 
 libft:
 	@make -C libft
@@ -42,5 +39,9 @@ fclean: clean
 	@rm -f server client libft/libft.a
 
 re: fclean all
+
+%.o: %.c
+	@$(CC) -c $(CFLAGS) $?
+
 
 .PHONY: all bonus libft clean fclean re
