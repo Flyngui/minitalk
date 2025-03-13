@@ -30,7 +30,6 @@ server: server.o libft
 	@$(CC) -c $(CFLAGS) $?
 
 libft:
-	@echo -e "$(BLUE)Compiling libft.$(NC)"
 	@make -C libft
 
 clean:
