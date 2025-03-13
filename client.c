@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:23 by guiferre          #+#    #+#             */
-/*   Updated: 2025/03/13 16:28:59 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/03/13 19:56:25 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ static void	sender(int pid, char *str)
 				kill(pid, SIGUSR2);
 			else
 				kill(pid, SIGUSR1);
-			usleep(100);
+			usleep(50);
 		}
 	}
 	i = 8;
 	while (i--)
 	{
 		kill(pid, SIGUSR1);
-		usleep(100);
+		usleep(50);
 	}
 }
 
