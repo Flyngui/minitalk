@@ -45,3 +45,5 @@ re: fclean all
 
 
 .PHONY: all bonus libft clean fclean re
+
+#Ubuntu use echo without -e, Fedora must use -e
