@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/03/19 20:17:25 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/03/19 21:10:44 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,12 @@ char	*ft_strchrjoin(char *s1, char c)
 	return (free(s1), str);
 }
 
-void	sig_handler(int sig, siginfo_t *info, void *context)
+int	signal_handler(int sig)
 {
 	static char				*string_save = NULL;
-	static pid_t			client_pid;
 	static int				i = 0;
 	static unsigned char	c = 0;
 
-	(void)context;
-	if (!client_pid)
-		client_pid = info->si_pid;
 	if (!string_save)
 		string_save = ft_strdup("");
 	c |= (sig == SIGUSR2);
@@ -52,20 +48,37 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 		i = 0;
 		if (!c)
 		{
-			kill(client_pid, SIGUSR2);
 			ft_printf("%s", string_save);
 			ft_printf("%c", '\n');
-			client_pid = 0;
 			free(string_save);
 			string_save = NULL;
-			return ;
+			return (2);
 		}
 		string_save = ft_strchrjoin(string_save, c);
 		c = 0;
-		kill(client_pid, SIGUSR1);
+		return (1);
 	}
 	else
 		c <<= 1;
+	return (0);
+}
+
+void	sig_handler(int sig, siginfo_t *info, void *context)
+{
+	static pid_t	client_pid = 0;
+	int				ret;
+
+	(void)context;
+	if (!client_pid)
+		client_pid = info->si_pid;
+	ret = signal_handler(sig);
+	if (ret == 2)
+	{
+		kill(client_pid, SIGUSR2);
+		client_pid = 0;
+	}
+	else if (ret == 1)
+		kill(client_pid, SIGUSR1);
 }
 
 int	main(void)
