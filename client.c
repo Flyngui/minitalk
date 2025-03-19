@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:23 by guiferre          #+#    #+#             */
-/*   Updated: 2025/03/13 19:56:25 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:31:58 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static void	sender(int pid, char *str)
 
 int	main(int argc, char **argv)
 {
-	if (argc != 3 || !ft_strlen(argv[2]))
+	if (argc != 3 || !ft_strlen(argv[2]) || ft_atoi(argv[1]) < 0)
 		return (1);
 	ft_printf("%s", "Sending: ");
 	ft_printf("%d", ft_strlen(argv[2]));

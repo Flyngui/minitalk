@@ -18,21 +18,21 @@ all: server client
 
 bonus: server client
 
-server: server.o libft
+libft/libft.a:
+	@$(MAKE) -C libft
+
+server: server.o libft/libft.a
 	@echo -e "$(CYAN)Compiling Server.$(NC)"
-	@$(CC) -o $@ $< -Llibft -lft
+	@$(CC) $(CFLAGS) -o $@ server.o -Llibft -lft
 
-client: client.o libft
+client: client.o libft/libft.a
 	@echo -e "$(CYAN)Compiling Client.$(NC)"
-	@$(CC) -o $@ $< -Llibft -lft
-
-libft:
-	@make -C libft
+	@$(CC) $(CFLAGS) -o $@ client.o -Llibft -lft
 
 clean:
 	@echo -e "$(YELLOW)Removing .o files.$(NC)"
 	@rm -f $(OBJECTS)
-	@make -C libft clean
+	@$(MAKE) -C libft clean
 
 fclean: clean
 	@echo -e "$(YELLOW)Removing executables.$(NC)"
@@ -44,6 +44,6 @@ re: fclean all
 	@$(CC) -c $(CFLAGS) $?
 
 
-.PHONY: all bonus libft clean fclean re
+.PHONY: all bonus clean fclean re
 
 #Ubuntu use echo without -e, Fedora must use -e
