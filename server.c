@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/03/21 01:12:01 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/03/21 02:00:59 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,24 +42,24 @@ int	signal_handler(int sig)
 
 	if (!string_save)
 		string_save = ft_strdup("");
+	c <<= 1;
 	c |= (sig == SIGUSR2);
 	if (++i == 8)
 	{
 		i = 0;
 		if (!c)
 		{
-			ft_printf("%s", string_save);
-			ft_printf("%c", '\n');
+			ft_printf("%s\n", string_save);
 			free(string_save);
 			string_save = NULL;
 			return (2);
 		}
 		string_save = ft_strchrjoin(string_save, c);
+		if (!string_save)
+			ft_printf("Broke on malloc");
 		c = 0;
 		return (1);
 	}
-	else
-		c <<= 1;
 	return (0);
 }
 
