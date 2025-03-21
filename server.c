@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/03/21 02:00:59 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/03/21 02:56:14 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ char	*ft_strchrjoin(char *s1, char c)
 	i = 0;
 	len1 = ft_strlen(s1);
 	str = malloc(len1 + 2);
+	ft_printf("\nMALLOC\n");
 	if (!str)
 		return (NULL);
 	while (i < len1)
@@ -42,6 +43,7 @@ int	signal_handler(int sig)
 
 	if (!string_save)
 		string_save = ft_strdup("");
+	ft_printf("Received bit\n");
 	c <<= 1;
 	c |= (sig == SIGUSR2);
 	if (++i == 8)
@@ -78,7 +80,9 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 		client_pid = 0;
 	}
 	else if (ret == 1)
+	{
 		kill(client_pid, SIGUSR1);
+	}
 }
 
 int	main(void)
