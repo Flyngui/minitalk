@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:23 by guiferre          #+#    #+#             */
-/*   Updated: 2025/04/01 13:58:59 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:12:01 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ static void	sender(t_client *client)
 		g_waiting = 1;
 		while (g_waiting)
 			;
+		if (!client->string)
+			break ;
+		client->string++;
 	}
-	i = 8;
-	while (i--)
-		kill(client->pid, SIGUSR1);
 }
 
 int	main(int argc, char **argv)
