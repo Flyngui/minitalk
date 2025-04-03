@@ -6,12 +6,11 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/03/21 02:56:14 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/04/01 14:06:42 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-#include <signal.h>
+#include "minitalk.h"
 
 char	*ft_strchrjoin(char *s1, char c)
 {
@@ -22,9 +21,11 @@ char	*ft_strchrjoin(char *s1, char c)
 	i = 0;
 	len1 = ft_strlen(s1);
 	str = malloc(len1 + 2);
-	ft_printf("\nMALLOC\n");
 	if (!str)
+	{
+		free(s1);
 		return (NULL);
+	}
 	while (i < len1)
 	{
 		str[i] = s1[i];
@@ -35,31 +36,26 @@ char	*ft_strchrjoin(char *s1, char c)
 	return (free(s1), str);
 }
 
-int	signal_handler(int sig)
+int	handle_signals(int sig, t_server *server)
 {
-	static char				*string_save = NULL;
-	static int				i = 0;
-	static unsigned char	c = 0;
+	static int	i = 0;
 
-	if (!string_save)
-		string_save = ft_strdup("");
-	ft_printf("Received bit\n");
-	c <<= 1;
-	c |= (sig == SIGUSR2);
+	server->cur_bit <<= 1;
+	server->cur_bit |= (sig == SIGUSR2);
 	if (++i == 8)
 	{
 		i = 0;
-		if (!c)
+		if (!server->cur_char)
 		{
-			ft_printf("%s\n", string_save);
-			free(string_save);
-			string_save = NULL;
+			ft_printf("%s\n", server->string);
+			free(server->string);
+			server->string = NULL;
 			return (2);
 		}
-		string_save = ft_strchrjoin(string_save, c);
-		if (!string_save)
-			ft_printf("Broke on malloc");
-		c = 0;
+		server->string = ft_strchrjoin(server->string, server->cur_char);
+		if (!server->string)
+			return (-1);
+		server->cur_char = 0;
 		return (1);
 	}
 	return (0);
@@ -67,21 +63,27 @@ int	signal_handler(int sig)
 
 void	sig_handler(int sig, siginfo_t *info, void *context)
 {
-	static pid_t	client_pid = 0;
+	static t_server	server;
 	int				ret;
 
 	(void)context;
-	if (!client_pid)
-		client_pid = info->si_pid;
-	ret = signal_handler(sig);
+	if (!server.pid)
+		server.pid = info->si_pid;
+	if (!server.string)
+	{
+		server.string = ft_strdup("");
+		if (!server.string)
+			return ;
+	}
+	ret = handle_signals(sig, &server);
 	if (ret == 2)
 	{
-		kill(client_pid, SIGUSR2);
-		client_pid = 0;
+		kill(server.pid, SIGUSR2);
+		server.pid = 0;
 	}
 	else if (ret == 1)
 	{
-		kill(client_pid, SIGUSR1);
+		kill(server.pid, SIGUSR1);
 	}
 }
 
