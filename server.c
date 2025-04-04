@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/04/03 19:26:25 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:31:41 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@ int	handle_signals(int sig, t_server *server)
 {
 	static int	i = 0;
 
-	server->cur_bit |= (sig == SIGUSR2);
 	server->cur_bit <<= 1;
+	if (sig == SIGUSR2)
+		server->cur_bit |= 1;
 	if (++i == 8)
 	{
 		i = 0;

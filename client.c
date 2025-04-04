@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:23 by guiferre          #+#    #+#             */
-/*   Updated: 2025/04/03 19:24:23 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:42:44 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,13 @@ static t_client	*get_args(int argc, char **argv)
 static void	sender(t_client *client)
 {
 	int		i;
-	char	c;
 
-	while (client->string)
+	while (*client->string++)
 	{
 		i = 8;
 		while (i--)
 		{
-			if (c >> i & 1)
+			if (*client->string >> i & 1)
 				kill(client->pid, SIGUSR2);
 			else
 				kill(client->pid, SIGUSR1);
@@ -64,7 +63,6 @@ static void	sender(t_client *client)
 			;
 		if (!client->string)
 			break ;
-		c = *client->string++;
 	}
 }
 
