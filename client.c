@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:23 by guiferre          #+#    #+#             */
-/*   Updated: 2025/05/12 21:56:26 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/05/12 22:26:16 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,15 @@ void	sender(unsigned int c, int size, int pid)
 	{
 		global_wait()->stop = 1;
 		if ((c >> size) & 1)
-			kill(pid, SIGUSR1);
+		{
+			if (kill(pid, SIGUSR1) == -1)
+				exit(ft_printf("%s\n,INVALID PID"));
+		}
 		else
-			kill(pid, SIGUSR2);
+		{
+			if (kill(pid, SIGUSR1) == -1)
+				exit(ft_printf("%s\n,INVALID PID"));
+		}
 		while (global_wait()->stop)
 			;
 	}
