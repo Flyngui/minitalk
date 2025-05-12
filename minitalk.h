@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 13:09:14 by guiferre          #+#    #+#             */
-/*   Updated: 2025/04/01 13:55:34 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/05/12 21:42:36 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ typedef struct s_server
 	int				cur_bit;
 	char			*string;
 }					t_server;
+
+typedef struct s_wait
+{
+	int				stop;
+}					t_wait;
 
 typedef struct s_client
 {

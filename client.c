@@ -6,83 +6,64 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:23 by guiferre          #+#    #+#             */
-/*   Updated: 2025/04/03 19:42:44 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/05/12 21:56:26 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static int		g_waiting = 0;
-
-static void	sig_handler(int sig)
+t_wait	*global_wait(void)
 {
-	static int	received = 0;
+	static t_wait	wait;
 
-	if (sig == SIGUSR1)
-	{
-		g_waiting = 0;
-		received++;
-	}
-	else
-	{
-		ft_printf("Bits received: %d", received);
-		ft_printf("%c", '\n');
-		exit(0);
-	}
+	return (&wait);
 }
 
-static t_client	*get_args(int argc, char **argv)
+t_client	*get_args(int argc, char **argv)
 {
-	static t_client	args;
-	int				pid;
+	static t_client	client_args;
 
 	if (argc != 3)
 		return (NULL);
-	pid = ft_atoi(argv[1]);
-	args.pid = pid;
-	args.string = argv[2];
-	return (&args);
+	client_args.pid = ft_atoi(argv[1]);
+	client_args.string = argv[2];
+	return (&client_args);
 }
 
-static void	sender(t_client *client)
+void	sender(unsigned int c, int size, int pid)
 {
-	int		i;
-
-	while (*client->string++)
+	while (size--)
 	{
-		i = 8;
-		while (i--)
-		{
-			if (*client->string >> i & 1)
-				kill(client->pid, SIGUSR2);
-			else
-				kill(client->pid, SIGUSR1);
-		}
-		g_waiting = 1;
-		while (g_waiting)
+		global_wait()->stop = 1;
+		if ((c >> size) & 1)
+			kill(pid, SIGUSR1);
+		else
+			kill(pid, SIGUSR2);
+		while (global_wait()->stop)
 			;
-		if (!client->string)
-			break ;
 	}
+}
+
+void	sig_handler(void)
+{
+	global_wait()->stop = 0;
 }
 
 int	main(int argc, char **argv)
 {
 	t_client	*client;
 
-	client = get_args(argc, argv);
 	if (argc != 3 || !ft_strlen(argv[2]) || ft_atoi(argv[1]) < 0)
 	{
 		ft_printf("Usage: <server-pid> <string>\n");
 		return (1);
 	}
+	client = get_args(argc, argv);
 	ft_printf("%s", "Sending: ");
-	ft_printf("%d", ft_strlen(argv[2]));
-	ft_printf("%c", '\n');
-	signal(SIGUSR1, sig_handler);
-	signal(SIGUSR2, sig_handler);
-	sender(client);
-	while (1)
-		pause();
+	ft_printf("%d\n", ft_strlen(argv[2]));
+	signal(SIGUSR1, (void *)sig_handler);
+	while (*client->string)
+		sender(*client->string++, 8, client->pid);
+	sender('\0', 8, client->pid);
 	return (0);
 }

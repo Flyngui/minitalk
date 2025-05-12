@@ -6,88 +6,76 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/04/03 19:31:41 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/05/12 21:56:37 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-char	*ft_strchrjoin(char *s1, char c)
+char	*ft_strnjoin(char *s1, char *s2, size_t n)
 {
+	char	*str;
 	size_t	len1;
 	size_t	i;
-	char	*str;
 
-	i = 0;
 	len1 = ft_strlen(s1);
-	str = malloc(len1 + 2);
+	if ((int)ft_strlen(s1) == -1)
+		len1 = 0;
+	str = malloc(len1 + n + 1);
 	if (!str)
-	{
-		free(s1);
 		return (NULL);
-	}
-	while (i < len1)
-	{
+	i = -1;
+	while (++i < len1)
 		str[i] = s1[i];
-		i++;
-	}
-	str[len1] = c;
-	str[len1 + 1] = '\0';
+	i = -1;
+	while (++i < n)
+		str[len1 + i] = s2[i];
+	str[len1 + n] = '\0';
 	return (free(s1), str);
 }
 
-int	handle_signals(int sig, t_server *server)
+void	signal_handler(int sig, t_server *server)
 {
-	static int	i = 0;
-
-	server->cur_bit <<= 1;
-	if (sig == SIGUSR2)
-		server->cur_bit |= 1;
-	if (++i == 8)
+	server->cur_char <<= 1;
+	if (sig == SIGUSR1)
+		server->cur_char |= 1;
+	server->cur_bit++;
+	if (server->cur_bit >= 8)
 	{
-		i = 0;
-		server->cur_char = server->cur_bit;
-		server->cur_bit = 0;
 		if (!server->cur_char)
 		{
-			ft_printf("%s\n", server->string);
-			free(server->string);
-			server->string = NULL;
-			return (2);
+			server->string = ft_strnjoin(server->string, "", 0);
+			if (server->string)
+			{
+				ft_putstr_fd(server->string, 1);
+				free(server->string);
+				server->string = NULL;
+			}
 		}
-		server->string = ft_strchrjoin(server->string, server->cur_char);
-		if (!server->string)
-			return (-1);
+		else
+			server->string = ft_strnjoin(server->string,
+					(char *)&server->cur_char, 1);
+		server->cur_bit = 0;
 		server->cur_char = 0;
-		return (1);
 	}
-	return (0);
 }
 
 void	sig_handler(int sig, siginfo_t *info, void *context)
 {
 	static t_server	server;
-	int				ret;
 
 	(void)context;
-	if (!server.pid)
-		server.pid = info->si_pid;
+	if (sig != SIGUSR1 || sig != SIGUSR2)
+		return ;
 	if (!server.string)
 	{
 		server.string = ft_strdup("");
 		if (!server.string)
 			return ;
 	}
-	ret = handle_signals(sig, &server);
-	if (ret == 2)
-	{
-		kill(server.pid, SIGUSR2);
-		server.pid = 0;
-	}
-	else
-	{
-		kill(server.pid, SIGUSR1);
-	}
+	signal_handler(sig, &server);
+	ft_printf("%i\n", info->si_pid);
+	kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)
@@ -98,11 +86,13 @@ int	main(void)
 	ft_printf("PID: ");
 	ft_printf("%d", getpid());
 	ft_printf("%c", '\n');
-	s_sa.sa_sigaction = sig_handler;
+	s_sa.sa_sigaction = (void *)sig_handler;
 	s_sa.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &s_sa, 0);
-	sigaction(SIGUSR2, &s_sa, 0);
+	sigemptyset(&s_sa.sa_mask);
+	sigaddset(&s_sa.sa_mask, SIGUSR1);
+	sigaddset(&s_sa.sa_mask, SIGUSR2);
+	sigaction(SIGUSR1, &s_sa, NULL);
+	sigaction(SIGUSR2, &s_sa, NULL);
 	while (1)
 		pause();
-	return (0);
 }

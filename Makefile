@@ -41,7 +41,7 @@ fclean: clean
 re: fclean all
 
 %.o: %.c
-	@$(CC) -c $(CFLAGS) $?
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 
 .PHONY: all bonus clean fclean re
