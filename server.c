@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/05/12 21:56:37 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/05/12 22:00:45 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 	static t_server	server;
 
 	(void)context;
-	if (sig != SIGUSR1 || sig != SIGUSR2)
+	if (sig != SIGUSR1 && sig != SIGUSR2)
 		return ;
 	if (!server.string)
 	{
@@ -74,7 +74,6 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 			return ;
 	}
 	signal_handler(sig, &server);
-	ft_printf("%i\n", info->si_pid);
 	kill(info->si_pid, SIGUSR1);
 }
 
