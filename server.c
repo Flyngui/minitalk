@@ -6,7 +6,7 @@
 /*   By: guiferre <guiferre@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:13:19 by guiferre          #+#    #+#             */
-/*   Updated: 2025/05/12 22:00:45 by guiferre         ###   ########.fr       */
+/*   Updated: 2025/05/13 20:57:33 by guiferre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,10 @@ void	signal_handler(int sig, t_server *server)
 			if (server->string)
 			{
 				ft_putstr_fd(server->string, 1);
+				ft_putstr_fd("\n", 1);
 				free(server->string);
 				server->string = NULL;
+				kill(server->pid, SIGUSR2);
 			}
 		}
 		else
@@ -67,6 +69,7 @@ void	sig_handler(int sig, siginfo_t *info, void *context)
 	(void)context;
 	if (sig != SIGUSR1 && sig != SIGUSR2)
 		return ;
+	server.pid = info->si_pid;
 	if (!server.string)
 	{
 		server.string = ft_strdup("");
